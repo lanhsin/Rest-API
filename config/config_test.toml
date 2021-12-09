@@ -1,0 +1,13 @@
+[redis]
+addr="test.redis.addr"
+
+[plat]
+addr="test.plat.addr"
+
+[autofan]
+addr="test.autofan.addr"
+
+[server]
+addr="test.server.addr"
+
+

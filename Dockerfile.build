@@ -1,0 +1,26 @@
+FROM docker-config-engine-stretch
+
+WORKDIR /src
+COPY . .
+
+# Install necessary packages
+RUN apt-get update && \
+    apt-get install -y \
+    wget \
+    git \
+    build-essential \
+    automake \
+    make
+
+RUN export VERSION=1.17.1 \
+ && cd /tmp \
+ && wget https://storage.googleapis.com/golang/go$VERSION.linux-amd64.tar.gz \
+ && tar -C /usr/local -xzf go$VERSION.linux-amd64.tar.gz \
+ && rm go$VERSION.linux-amd64.tar.gz 
+
+ENV GOPATH /go
+ENV PATH $PATH:/usr/local/go/bin
+
+# Compile
+RUN make all
+

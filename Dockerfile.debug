@@ -1,0 +1,57 @@
+FROM docker-config-engine-stretch
+
+# Add MODE arg
+ARG MODE
+
+# Copy all the files from the host into the container
+WORKDIR /src
+COPY . .
+
+RUN apt-get update &&  \
+    apt-get install -y \
+    wget \
+    git \
+    build-essential \
+    automake \
+    make \
+    redis-tools=5:5.0.3-3~bpo9+2 \
+    redis-server=5:5.0.3-3~bpo9+2   \
+    nginx
+
+RUN export VERSION=1.17.1 \
+ && cd /tmp \
+ && wget https://storage.googleapis.com/golang/go$VERSION.linux-amd64.tar.gz \
+ && tar -C /usr/local -xzf go$VERSION.linux-amd64.tar.gz \
+ && rm go$VERSION.linux-amd64.tar.gz
+
+ENV GOPATH /go
+ENV PATH $PATH:/usr/local/go/bin
+
+# Compile
+RUN make all
+
+# Prepare files
+RUN mkdir /usr/bin/pemgr
+
+# Prepare pemgr configs
+RUN mv /src/_bin/info.toml /usr/bin/pemgr/info.toml
+COPY docker/config.toml /usr/bin/pemgr/config.toml
+RUN echo ${MODE}
+RUN sed -i "s/imp_mode.*/imp_mode=${MODE:-2}/g" /usr/bin/pemgr/config.toml
+
+# Prepare pemgr binaries
+RUN mv /src/_bin/pemgr-plat /usr/bin/pemgr
+RUN mv /src/_bin/pemgr-server /usr/bin/pemgr
+RUN mv /src/_bin/generate_cert /usr/bin/pemgr
+
+# NGINX
+RUN cd /etc/nginx && /usr/bin/pemgr/generate_cert --host="localhost,127.0.0.1"
+COPY web/ /usr/share/nginx/html/
+COPY docker/nginx.conf /etc/nginx/
+
+COPY docker/redis.conf /etc/redis/
+COPY docker/supervisord.conf /etc/supervisor/conf.d/
+
+
+# Start supervisord
+ENTRYPOINT ["/usr/bin/supervisord"]
