@@ -7,7 +7,6 @@ import (
 const (
 	testRedisAddr   = "test.redis.addr"
 	testPlatAddr    = "test.plat.addr"
-	testAutofanAddr = "test.autofan.addr"
 	testServerAddr  = "test.server.addr"
 )
 
@@ -21,9 +20,6 @@ func TestLoad(t *testing.T) {
 	}
 	if testConfig.Plat.Addr != testPlatAddr {
 		t.Errorf("%v != %v", testConfig.Plat.Addr, testPlatAddr)
-	}
-	if testConfig.Autofan.Addr != testAutofanAddr {
-		t.Errorf("%v != %v", testConfig.Autofan.Addr, testAutofanAddr)
 	}
 	if testConfig.Plat.Addr != testPlatAddr {
 		t.Errorf("%v != %v", testConfig.Plat.Addr, testPlatAddr)

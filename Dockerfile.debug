@@ -1,8 +1,5 @@
 FROM docker-config-engine-stretch
 
-# Add MODE arg
-ARG MODE
-
 # Copy all the files from the host into the container
 WORKDIR /src
 COPY . .
@@ -36,8 +33,6 @@ RUN mkdir /usr/bin/pemgr
 # Prepare pemgr configs
 RUN mv /src/_bin/info.toml /usr/bin/pemgr/info.toml
 COPY docker/config.toml /usr/bin/pemgr/config.toml
-RUN echo ${MODE}
-RUN sed -i "s/imp_mode.*/imp_mode=${MODE:-2}/g" /usr/bin/pemgr/config.toml
 
 # Prepare pemgr binaries
 RUN mv /src/_bin/pemgr-plat /usr/bin/pemgr

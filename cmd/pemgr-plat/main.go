@@ -85,19 +85,15 @@ func main() {
 
 	database.InitializePemgr(pConfig.Redis.Addr)
 
-	Lig.Info().Msgf("ImpMode: %v", pConfig.Plat.ImpMode)
 	var platServer hal.PlatServer
-	switch pConfig.Plat.ImpMode {
-	default:
-		platServer = hal.PlatServer{
-			Temperature: &hal.MockupTemperature{},
-			Led:         &hal.MockupLed{},
-			Button:      &hal.MockupButton{},
-			Fan:         &hal.MockupFan{},
-			Ssd:         &hal.MockupSsd{},
-			Voltage:     &hal.MockupVoltage{},
-			Psu:         &hal.MockupPsu{},
-		}
+	platServer = hal.PlatServer{
+		Temperature: &hal.MockupTemperature{},
+		Led:         &hal.MockupLed{},
+		Button:      &hal.MockupButton{},
+		Fan:         &hal.MockupFan{},
+		Ssd:         &hal.MockupSsd{},
+		Voltage:     &hal.MockupVoltage{},
+		Psu:         &hal.MockupPsu{},
 	}
 
 	wg := new(sync.WaitGroup)

@@ -13,18 +13,10 @@ var (
 	infoFile   = "info.toml"
 )
 
-type ImpMode uint
-
-const (
-	HwMode ImpMode = iota
-	DbMode
-	MockupMode
-)
 
 type Config struct {
 	Redis   RedisConf
 	Plat    PlatConf
-	Autofan AutofanConf
 	Server  ServerConf
 }
 
@@ -36,11 +28,6 @@ type PlatConf struct {
 	Addr         string `toml:"addr"`
 	Stdout       string `toml:"stdout"`
 	Stderr       string `toml:"stderr"`
-	ImpMode      ImpMode `toml:"imp_mode"`
-}
-
-type AutofanConf struct {
-	Addr string `toml:"addr"`
 }
 
 type ServerConf struct {
@@ -61,9 +48,6 @@ var Default = Config{
 	},
 	Plat: PlatConf{
 		Addr: "localhost:50010",
-	},
-	Autofan: AutofanConf{
-		Addr: "localhost:50011",
 	},
 	Server: ServerConf{
 		HttpEnable:        true,

@@ -5,8 +5,6 @@
 #
 FROM golang:1.17-stretch AS builder
 
-# Install upx (upx.github.io) to compress the compiled action
-#RUN apt-get update && apt-get -y install upx
 
 # Turn on Go modules support and disable CGO
 ENV GO111MODULE=on CGO_ENABLED=0
@@ -18,19 +16,10 @@ COPY . .
 # Compile
 RUN make all
 
-# Strip any symbols
-#RUN strip _bin/*
-
-# Compress the compiled action
-#RUN upx -9 _bin/*
-
 #
 # Step 2: Prepare application
 #
 FROM docker-config-engine-stretch
-
-# Add MOCKUP arg
-ARG MODE
 
 WORKDIR /home
 
@@ -47,8 +36,6 @@ RUN mkdir /usr/bin/pemgr
 # Prepare pemgr configs
 COPY --from=builder /src/_bin/info.toml /usr/bin/pemgr/info.toml
 COPY docker/config.toml /usr/bin/pemgr/config.toml
-RUN echo ${MODE}
-RUN sed -i "s/imp_mode.*/imp_mode=${MODE:-2}/g" /usr/bin/pemgr/config.toml
 
 # Prepare pemgr binaries
 COPY --from=builder /src/_bin/pemgr-plat /usr/bin/pemgr

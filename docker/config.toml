@@ -5,10 +5,6 @@ addr="localhost:6380"
 addr="localhost:50010"
 stdout="/var/log/pemgr-plat.out"
 stderr="/var/log/pemgr-plat.err"
-imp_mode=2
-
-[autofan]
-addr="localhost:50011"
 
 [server]
 http_enable=true
